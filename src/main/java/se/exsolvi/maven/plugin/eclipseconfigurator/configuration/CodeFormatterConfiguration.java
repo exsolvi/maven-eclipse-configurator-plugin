@@ -6,8 +6,18 @@ import se.exsolvi.maven.plugin.eclipseconfigurator.configurationhandler.Workspac
 
 public class CodeFormatterConfiguration {
 
-    WorkspaceConfigurationHandler workspaceConfigurationHandler = new WorkspaceConfigurationHandler("..");
-    ProjectConfigurationHandler projectConfigurationHandler = new ProjectConfigurationHandler(".");
+    WorkspaceConfigurationHandler workspaceConfigurationHandler;
+    ProjectConfigurationHandler projectConfigurationHandler;
+
+    EclipseCodeFormatter formatter;
+
+    public CodeFormatterConfiguration() {
+        // TODO: How do we handle context in a better way?
+        workspaceConfigurationHandler = new WorkspaceConfigurationHandler("..");
+        projectConfigurationHandler = new ProjectConfigurationHandler(".");
+        workspaceConfigurationHandler.setContext(EclipseConfigurationContext.CODEFORMATTER);
+        projectConfigurationHandler.setContext(EclipseConfigurationContext.CODEFORMATTER);
+    }
 
     public String getActiveCodeFormatterName() {
         if (getProjectCodeFormatterName() != null) {
@@ -25,6 +35,10 @@ public class CodeFormatterConfiguration {
     public String getWorkspaceCodeFormatterName() {
         workspaceConfigurationHandler.setContext(EclipseConfigurationContext.CODEFORMATTER);
         return workspaceConfigurationHandler.getValue("formatter_profile");
+    }
+
+    public String getAvailableCodeFormatters() {
+        return workspaceConfigurationHandler.getValue("org.eclipse.jdt.ui.formatterprofiles");
     }
 
 }
