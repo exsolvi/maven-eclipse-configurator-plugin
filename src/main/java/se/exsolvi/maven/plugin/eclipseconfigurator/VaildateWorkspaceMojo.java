@@ -1,4 +1,4 @@
-package se.exsolvi.mvaen.plugin.maven_eclipse_configurator_plugin;
+package se.exsolvi.maven.plugin.eclipseconfigurator;
 
 /*
  * Copyright 2001-2005 The Apache Software Foundation.
@@ -22,6 +22,9 @@ import java.security.InvalidParameterException;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+
+import se.exsolvi.maven.plugin.eclipseconfigurator.configurationhandler.EclipseConfigurationHandler;
+import se.exsolvi.maven.plugin.eclipseconfigurator.configurationhandler.WorkspaceConfigurationHandler;
 
 /**
  * Goal that validates workspace configuration
@@ -55,6 +58,9 @@ public class VaildateWorkspaceMojo extends AbstractMojo {
 
     @Override
     public void execute() throws MojoExecutionException {
+
+        EclipseConfigurationHandler projConf;
+        WorkspaceConfigurationHandler wsConf;
 
         workspaceMetaDirectory = detectWorkspace(workspaceDirectory);
         if (vaildateDirectory(projectDirectory, ConfigurationType.PROJECT)) {
