@@ -25,6 +25,9 @@
                 <groupId>se.exsolvi.maven.plugin</groupId>
                 <artifactId>eclipse-configurator-maven-plugin</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
+                <configuration>
+                    <expectedCodeformatterName>ExsolviRocks</expectedCodeformatterName>
+                </configuration>
             </plugin>
         </plugins>
     </build>

@@ -1,29 +1,16 @@
 package se.exsolvi.maven.plugin.eclipseconfigurator;
 
-/*
- * Copyright 2001-2005 The Apache Software Foundation.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+import static se.exsolvi.maven.plugin.eclipseconfigurator.EclipseUtility.vaildateProjectDirectory;
+import static se.exsolvi.maven.plugin.eclipseconfigurator.EclipseUtility.vaildateWorkspaceDirectory;
 
 import java.io.File;
 import java.io.IOException;
-import java.security.InvalidParameterException;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 
-import se.exsolvi.maven.plugin.eclipseconfigurator.configurationhandler.EclipseConfigurationHandler;
+import se.exsolvi.maven.plugin.eclipseconfigurator.configuration.CodeFormatterConfiguration;
+import se.exsolvi.maven.plugin.eclipseconfigurator.configurationhandler.ProjectConfigurationHandler;
 import se.exsolvi.maven.plugin.eclipseconfigurator.configurationhandler.WorkspaceConfigurationHandler;
 
 /**
@@ -35,83 +22,75 @@ import se.exsolvi.maven.plugin.eclipseconfigurator.configurationhandler.Workspac
  */
 public class VaildateWorkspaceMojo extends AbstractMojo {
 
-    enum ConfigurationType {
-        WORKSPACE, PROJECT;
-    }
-
     /**
      * Location of workspace
      * 
-     * @parameter expression="${touch:projectDirectory}" default-value="${basedir}"
+     * @parameter expression="${validate-workspace:projectDirectory}" default-value="${basedir}"
      */
     private String projectDirectory;
 
     /**
      * Location of workspace
      * 
-     * @parameter expression="${touch:workspaceDirectory}" default-value="${basedir}../"
+     * @parameter expression="${validate-workspace:workspaceDirectory}" default-value="${basedir}/.."
      */
     private String workspaceDirectory;
 
-    private File workspaceMetaDirectory;
-    private File projectSettingsDirectory;
+    /**
+     * Location of workspace
+     * 
+     * @parameter expression="${validate-workspace:coderformatterName}"
+     */
+    private String expectedCodeformatterName;
+
+    private String canoicalWorkspaceDirectory;
+    private String canoicalProjectDirectory;
 
     @Override
     public void execute() throws MojoExecutionException {
 
-        EclipseConfigurationHandler projConf;
-        WorkspaceConfigurationHandler wsConf;
+        if (expectedCodeformatterName == null || expectedCodeformatterName.equals("")) {
+            throw new RuntimeException("Missing coderformatterName");
+        }
 
-        workspaceMetaDirectory = detectWorkspace(workspaceDirectory);
-        if (vaildateDirectory(projectDirectory, ConfigurationType.PROJECT)) {
+        // TODO: Proper exception-handling
+        // getLog().info("Default ws: " + workspaceDirectory);
+        if (vaildateWorkspaceDirectory(workspaceDirectory)) {
             try {
-                projectSettingsDirectory = new File(projectDirectory + "/.settings").getCanonicalFile();
+                canoicalWorkspaceDirectory = new File(workspaceDirectory).getCanonicalPath();
+                // getLog().info(canoicalWorkspaceDirectory);
             } catch (IOException e) {
-                throw new InvalidParameterException("Invalid project directory");
+                throw new RuntimeException("Invalid workspace directory");
             }
         } else {
-            throw new InvalidParameterException("Invalid project directory");
-        }
-        getLog().info("Workspace meta directory is: " + workspaceMetaDirectory);
-        getLog().info("Project settings directory is:  " + projectSettingsDirectory);
-    }
-
-    private File detectWorkspace(String possibleWorkspace) throws MojoExecutionException {
-
-        // Try if the supplied parameter is the workspace
-        String dir = possibleWorkspace + "/.metadata";
-        dir.replaceAll("//", "/");
-        if (vaildateDirectory(dir, ConfigurationType.WORKSPACE)) {
-            try {
-                return new File(dir).getCanonicalFile();
-            } catch (IOException e) {
-                throw new MojoExecutionException("Internal error - can not find workspace");
-            }
+            throw new RuntimeException("Invalid workspace directory");
         }
 
-        // Try if the supplied parameter has a workspace in the parent directory
-        dir = possibleWorkspace + "/../.metadata";
-        dir.replaceAll("//", "/");
-        if (vaildateDirectory(dir, ConfigurationType.WORKSPACE)) {
+        // TODO: Proper exception-handling
+        if (vaildateProjectDirectory(projectDirectory)) {
             try {
-                return new File(dir).getCanonicalFile();
+                canoicalProjectDirectory = new File(projectDirectory).getCanonicalPath();
             } catch (IOException e) {
-                throw new InvalidParameterException("Internal error - can not find workspace");
+                throw new RuntimeException("Invalid project directory)");
             }
         } else {
-            throw new InvalidParameterException("Error finding workspace");
+            throw new RuntimeException("Invalid project directory)");
         }
 
-    }
+        getLog().info("Workspace directory is: " + canoicalWorkspaceDirectory);
+        getLog().info("Project directory is:  " + canoicalProjectDirectory);
 
-    private boolean vaildateDirectory(String dir, ConfigurationType config) {
-        String versionFile = null;
-        if (config == ConfigurationType.WORKSPACE) {
-            versionFile = dir + "/version.ini";
+        WorkspaceConfigurationHandler wsConfigurationHandler = new WorkspaceConfigurationHandler(
+                canoicalWorkspaceDirectory);
+        ProjectConfigurationHandler projConfigurationHandler = new ProjectConfigurationHandler(canoicalProjectDirectory);
+        CodeFormatterConfiguration codeFormatterConfiguration = new CodeFormatterConfiguration(wsConfigurationHandler,
+                projConfigurationHandler);
+        String activeCodeformatterName = codeFormatterConfiguration.getActiveCodeFormatterName();
+        if (expectedCodeformatterName.equals(activeCodeformatterName)) {
+            getLog().info("Correct codeformatter identified");
         } else {
-            versionFile = dir + "/.project";
+            throw new RuntimeException("Wrong code formatter found, expecting '" + expectedCodeformatterName
+                    + "' but found '" + activeCodeformatterName + "'");
         }
-        File workspace = new File(versionFile);
-        return workspace.exists();
     }
 }

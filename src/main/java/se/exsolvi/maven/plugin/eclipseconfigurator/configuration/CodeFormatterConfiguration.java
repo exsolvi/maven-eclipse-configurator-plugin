@@ -9,12 +9,10 @@ public class CodeFormatterConfiguration {
     WorkspaceConfigurationHandler workspaceConfigurationHandler;
     ProjectConfigurationHandler projectConfigurationHandler;
 
-    EclipseCodeFormatter formatter;
-
-    public CodeFormatterConfiguration() {
-        // TODO: How do we handle context in a better way?
-        workspaceConfigurationHandler = new WorkspaceConfigurationHandler("..");
-        projectConfigurationHandler = new ProjectConfigurationHandler(".");
+    public CodeFormatterConfiguration(WorkspaceConfigurationHandler workspaceConfigurationHandler,
+            ProjectConfigurationHandler projectConfigurationHandler) {
+        this.workspaceConfigurationHandler = workspaceConfigurationHandler;
+        this.projectConfigurationHandler = projectConfigurationHandler;
         workspaceConfigurationHandler.setContext(EclipseConfigurationContext.CODEFORMATTER);
         projectConfigurationHandler.setContext(EclipseConfigurationContext.CODEFORMATTER);
     }
