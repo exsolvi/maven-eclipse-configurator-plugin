@@ -1,7 +1,7 @@
 package se.exsolvi.maven.plugin.eclipseconfigurator.configurationhandler;
 
-
-public class ProjectConfigurationHandler extends AbstractEclipseConfigurationHandler implements EclipseConfigurationHandler {
+public class ProjectConfigurationHandler extends AbstractEclipseConfigurationHandler implements
+        EclipseConfigurationHandler {
 
     private static final String PROJECT_SETTINGS_DIRECTORY = ".settings";
 

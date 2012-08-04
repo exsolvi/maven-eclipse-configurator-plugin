@@ -18,8 +18,7 @@ public class AbstractEclipseConfigurationHandler implements EclipseConfiguration
         try {
             properties.load(new FileReader(settingsDirectory + "/"
                     + filenameMapping.get(EclipseConfigurationContext.CODEFORMATTER)));
-            // Used for debugging
-            // properties.list(System.out);
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {

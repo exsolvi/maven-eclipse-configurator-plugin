@@ -1,7 +1,7 @@
 package se.exsolvi.maven.plugin.eclipseconfigurator.configurationhandler;
 
-
-public class WorkspaceConfigurationHandler extends AbstractEclipseConfigurationHandler implements EclipseConfigurationHandler {
+public class WorkspaceConfigurationHandler extends AbstractEclipseConfigurationHandler implements
+        EclipseConfigurationHandler {
     private static final String WORKSPACE_SETTINGS_DIRECTORY = ".metadata/.plugins";
 
     public WorkspaceConfigurationHandler(String workspaceDirectory) {

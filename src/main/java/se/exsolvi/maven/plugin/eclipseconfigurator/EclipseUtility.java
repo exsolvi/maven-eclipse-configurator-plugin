@@ -12,7 +12,7 @@ public class EclipseUtility {
         // Try if the supplied parameter is the workspace
         String dir = possibleWorkspace + "/.metadata";
         dir.replaceAll("//", "/");
-        if (vaildateWorkspaceDirectory(dir)) {
+        if (validateWorkspaceDirectory(dir)) {
             try {
                 return new File(dir).getCanonicalFile();
             } catch (IOException e) {
@@ -23,7 +23,7 @@ public class EclipseUtility {
         // Try if the supplied parameter has a workspace in the parent directory
         dir = possibleWorkspace + "/../.metadata";
         dir.replaceAll("//", "/");
-        if (vaildateWorkspaceDirectory(dir)) {
+        if (validateWorkspaceDirectory(dir)) {
             try {
                 return new File(dir).getCanonicalFile();
             } catch (IOException e) {
@@ -35,14 +35,14 @@ public class EclipseUtility {
 
     }
 
-    public static boolean vaildateWorkspaceDirectory(String dir) {
+    public static boolean validateWorkspaceDirectory(String dir) {
         String versionFile = dir + "/.metadata/version.ini";
         versionFile.replaceAll("//", "/");
         File workspace = new File(versionFile);
         return workspace.exists();
     }
 
-    public static boolean vaildateProjectDirectory(String dir) {
+    public static boolean validateProjectDirectory(String dir) {
         String versionFile = dir + "/.project";
         versionFile.replaceAll("//", "/");
         File workspace = new File(versionFile);

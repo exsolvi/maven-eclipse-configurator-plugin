@@ -9,6 +9,16 @@ public class CodeFormatterConfiguration {
     WorkspaceConfigurationHandler workspaceConfigurationHandler;
     ProjectConfigurationHandler projectConfigurationHandler;
 
+    public CodeFormatterConfiguration(WorkspaceConfigurationHandler workspaceConfigurationHandler) {
+        this.workspaceConfigurationHandler = workspaceConfigurationHandler;
+        workspaceConfigurationHandler.setContext(EclipseConfigurationContext.CODEFORMATTER);
+    }
+
+    public CodeFormatterConfiguration(ProjectConfigurationHandler projectConfigurationHandler) {
+        this.projectConfigurationHandler = projectConfigurationHandler;
+        projectConfigurationHandler.setContext(EclipseConfigurationContext.CODEFORMATTER);
+    }
+
     public CodeFormatterConfiguration(WorkspaceConfigurationHandler workspaceConfigurationHandler,
             ProjectConfigurationHandler projectConfigurationHandler) {
         this.workspaceConfigurationHandler = workspaceConfigurationHandler;
@@ -26,13 +36,21 @@ public class CodeFormatterConfiguration {
     }
 
     public String getProjectCodeFormatterName() {
-        projectConfigurationHandler.setContext(EclipseConfigurationContext.CODEFORMATTER);
-        return projectConfigurationHandler.getValue("formatter_profile");
+        if (projectConfigurationHandler == null) {
+            return null;
+        } else {
+            projectConfigurationHandler.setContext(EclipseConfigurationContext.CODEFORMATTER);
+            return projectConfigurationHandler.getValue("formatter_profile");
+        }
     }
 
     public String getWorkspaceCodeFormatterName() {
-        workspaceConfigurationHandler.setContext(EclipseConfigurationContext.CODEFORMATTER);
-        return workspaceConfigurationHandler.getValue("formatter_profile");
+        if (workspaceConfigurationHandler == null) {
+            return null;
+        } else {
+            workspaceConfigurationHandler.setContext(EclipseConfigurationContext.CODEFORMATTER);
+            return workspaceConfigurationHandler.getValue("formatter_profile");
+        }
     }
 
     public String getAvailableCodeFormatters() {
