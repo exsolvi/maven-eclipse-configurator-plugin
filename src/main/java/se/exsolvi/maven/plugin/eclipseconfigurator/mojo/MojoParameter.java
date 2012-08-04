@@ -1,6 +1,5 @@
 package se.exsolvi.maven.plugin.eclipseconfigurator.mojo;
 
-
 public class MojoParameter {
 
     private final String name;

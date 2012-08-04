@@ -29,6 +29,11 @@ public class ValidateCodeFormatterMojo extends AbstractMojo {
      */
     private String expectedCodeformatterName;
 
+    /**
+     * @parameter expression="${validate:failOnError}" default-value=false
+     */
+    private boolean failOnError;
+
     private final MojoParameters mojoParameters = new MojoParameters();
 
     @Override
@@ -43,8 +48,13 @@ public class ValidateCodeFormatterMojo extends AbstractMojo {
                 projectDirectory);
         EclipseConfigurator eclipseConfigurator = new EclipseConfigurator(eclipseEnvironment);
         if (!eclipseConfigurator.validateCodeFormatter(expectedCodeformatterName)) {
-            throw new RuntimeException("Wrong code formatter found, expecting '" + expectedCodeformatterName
-                    + "' but found '" + eclipseConfigurator.getActiveCodeformatterName() + "'");
+            String errorMessage = "Wrong code formatter found, expecting '" + expectedCodeformatterName
+                    + "' but found '" + eclipseConfigurator.getActiveCodeformatterName() + "'";
+            if (failOnError) {
+                throw new RuntimeException(errorMessage);
+            } else {
+                getLog().warn(errorMessage);
+            }
         }
 
     }

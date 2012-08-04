@@ -29,6 +29,11 @@ public class ValidateWorkspaceCodeFormatterMojo extends AbstractMojo {
      */
     private String expectedCodeformatterName;
 
+    /**
+     * @parameter expression="${validate:failOnError}" default-value=false
+     */
+    private boolean failOnError;
+
     private final MojoParameters mojoParameters = new MojoParameters();
     private final EclipseEnvironment eclipseEnvironment = new EclipseEnvironment(EclipseVersion.JUNO);
 
@@ -45,8 +50,13 @@ public class ValidateWorkspaceCodeFormatterMojo extends AbstractMojo {
 
         EclipseConfigurator eclipseConfigurator = new EclipseConfigurator(eclipseEnvironment);
         if (!eclipseConfigurator.validateWorkspaceCodeFormatter(expectedCodeformatterName)) {
-            throw new RuntimeException("Wrong code formatter found, expecting '" + expectedCodeformatterName
-                    + "' but found '" + eclipseConfigurator.getActiveWorkspaceCodeformatterName() + "'");
+            String errorMessage = "Wrong code formatter found, expecting '" + expectedCodeformatterName
+                    + "' but found '" + eclipseConfigurator.getActiveWorkspaceCodeformatterName() + "'";
+            if (failOnError) {
+                throw new RuntimeException(errorMessage);
+            } else {
+                getLog().warn(errorMessage);
+            }
         }
     }
 }
