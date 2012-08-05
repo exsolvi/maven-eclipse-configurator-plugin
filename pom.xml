@@ -27,6 +27,8 @@
                 <version>0.0.1-SNAPSHOT</version>
                 <configuration>
                     <expectedCodeformatterName>ExsolviRocks</expectedCodeformatterName>
+                    <validationMode>BOTH</validationMode>
+                    <failOnError>false</failOnError>
                 </configuration>
             </plugin>
         </plugins>
@@ -44,4 +46,18 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <distributionManagement>
+        <repository>
+            <id>exsolvi</id>
+            <name>exsolvi-releases</name>
+            <url>http://artifactory.exsolvi.se:8081/artifactory/libs-releases-local</url>
+        </repository>
+        <snapshotRepository>
+            <id>exsolvi</id>
+            <name>exsolvi-snapshots</name>
+            <url>http://artifactory.exsolvi.se:8081/artifactory/libs-snapshots-local</url>
+        </snapshotRepository>
+    </distributionManagement>
+
 </project>

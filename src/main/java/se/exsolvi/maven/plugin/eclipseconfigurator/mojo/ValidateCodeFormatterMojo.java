@@ -30,6 +30,11 @@ public class ValidateCodeFormatterMojo extends AbstractMojo {
     private String expectedCodeformatterName;
 
     /**
+     * @parameter expression="${validate:validationMode}" default-value="BOTH"
+     */
+    private String validationMode;
+
+    /**
      * @parameter expression="${validate:failOnError}" default-value=false
      */
     private boolean failOnError;
@@ -41,12 +46,15 @@ public class ValidateCodeFormatterMojo extends AbstractMojo {
 
         mojoParameters.add("workspaceDirectory", workspaceDirectory, true, EclipseEnvironment.WorkspaceValidator.class);
         mojoParameters.add("projectDirectory", projectDirectory, true, EclipseEnvironment.ProjectValidator.class);
+        mojoParameters.add("validationMode", validationMode, true, EclipseConfigurator.TargetValidator.class);
         mojoParameters.add("coderformatterName", expectedCodeformatterName, true);
         mojoParameters.validate();
 
         EclipseEnvironment eclipseEnvironment = new EclipseEnvironment(EclipseVersion.JUNO, workspaceDirectory,
                 projectDirectory);
         EclipseConfigurator eclipseConfigurator = new EclipseConfigurator(eclipseEnvironment);
+        eclipseConfigurator.setValidationMode(validationMode);
+
         if (!eclipseConfigurator.validateCodeFormatter(expectedCodeformatterName)) {
             String errorMessage = "Wrong code formatter found, expecting '" + expectedCodeformatterName
                     + "' but found '" + eclipseConfigurator.getActiveCodeformatterName() + "'";
