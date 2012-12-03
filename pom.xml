@@ -7,9 +7,13 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>Eclipse Configurator Plugin</name>
     <url>www.exsolvi.se</url>
-    <properties>
-        <project.build.sourceEncoding>cp1252</project.build.sourceEncoding>
-    </properties>
+
+    <parent>
+        <groupId>se.exsolvi.maven.pom</groupId>
+        <artifactId>parentpom</artifactId>
+        <version>1.2.2-SNAPSHOT</version>
+    </parent>
+
     <build>
         <plugins>
             <plugin>
@@ -26,38 +30,25 @@
                 <artifactId>eclipse-configurator-maven-plugin</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
                 <configuration>
-                    <expectedCodeformatterName>ExsolviRocks</expectedCodeformatterName>
+                    <expectedCodeformatterName>NoExsolviRocks</expectedCodeformatterName>
                     <validationMode>BOTH</validationMode>
-                    <failOnError>false</failOnError>
+                    <failOnError>true</failOnError>
                 </configuration>
             </plugin>
         </plugins>
     </build>
+
     <dependencies>
         <dependency>
-            <groupId>org.apache.maven</groupId>
-            <artifactId>maven-plugin-api</artifactId>
-            <version>2.0</version>
+          <groupId>org.apache.maven</groupId>
+          <artifactId>maven-plugin-api</artifactId>
+          <version>2.0</version>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.10</version>
-            <scope>test</scope>
+          <groupId>junit</groupId>
+          <artifactId>junit</artifactId>
+          <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <distributionManagement>
-        <repository>
-            <id>exsolvi</id>
-            <name>exsolvi-releases</name>
-            <url>http://artifactory.exsolvi.se:8081/artifactory/libs-releases-local</url>
-        </repository>
-        <snapshotRepository>
-            <id>exsolvi</id>
-            <name>exsolvi-snapshots</name>
-            <url>http://artifactory.exsolvi.se:8081/artifactory/libs-snapshots-local</url>
-        </snapshotRepository>
-    </distributionManagement>
 
 </project>
